@@ -1,0 +1,135 @@
+<div data-ng-controller="MoviesCtrl" class="vz-ctrl-wrapper">
+
+    <!-- Barre de titre -->
+    <md-toolbar md-scroll-shrink class="md-primary">
+        <div class="md-toolbar-tools">
+            <md-button class="md-fab md-mini" style="background-color: transparent; box-shadow: 0 0;" aria-label="View source on Github"
+            target="_blank" ng-href="http://vivienzo.fr">
+                <md-tooltip md-direction="right">View source on Github</md-tooltip>
+                <svg style="position: relative; top: 4px; right: 2px;" aria-hidden="true" class="octicon octicon-mark-github" height="32"
+                version="1.1" viewBox="0 0 16 16" width="32">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59 0.4 0.07 0.55-0.17 0.55-0.38 0-0.19-0.01-0.82-0.01-1.49-2.01 0.37-2.53-0.49-2.69-0.94-0.09-0.23-0.48-0.94-0.82-1.13-0.28-0.15-0.68-0.52-0.01-0.53 0.63-0.01 1.08 0.58 1.23 0.82 0.72 1.21 1.87 0.87 2.33 0.66 0.07-0.52 0.28-0.87 0.51-1.07-1.78-0.2-3.64-0.89-3.64-3.95 0-0.87 0.31-1.59 0.82-2.15-0.08-0.2-0.36-1.02 0.08-2.12 0 0 0.67-0.21 2.2 0.82 0.64-0.18 1.32-0.27 2-0.27 0.68 0 1.36 0.09 2 0.27 1.53-1.04 2.2-0.82 2.2-0.82 0.44 1.1 0.16 1.92 0.08 2.12 0.51 0.56 0.82 1.27 0.82 2.15 0 3.07-1.87 3.75-3.65 3.95 0.29 0.25 0.54 0.73 0.54 1.48 0 1.07-0.01 1.93-0.01 2.2 0 0.21 0.15 0.46 0.55 0.38C13.71 14.53 16 11.53 16 8 16 3.58 12.42 0 8 0z"></path>
+                </svg>
+            </md-button>
+            <div class="md-title md-flex vz-center-block">Top movies</div>
+            <md-button class="md-fab md-mini" aria-label="Open search filter" ng-click="openSidenav()">
+                <md-tooltip md-direction="left">Search filters</md-tooltip>
+                <md-icon>filter_list</md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+
+    <!-- Contenu de la page -->
+    <md-content flex layout-padding class="vz-background-grey">
+        <section layout="row" flex>
+            <div layout="column" layout-fill layout-align="top center">
+
+                <div layout="row" layout-fill class="vz-table-card-wrapper">
+                    <md-card layout="column" layout-padding flex layout-fill>
+
+                        <md-table-container>
+                            <table md-table md-progress="promise">
+                                <thead md-head md-order="query.order" md-on-reorder="onorderchange">
+                                    <tr md-row>
+                                        <th md-column><span>Poster</span></th>
+                                        <th md-column md-order-by="original_title"><span>Original title</span></th>
+                                        <th md-column md-numeric md-order-by="popularity" md-desc><span>Popularity</span></th>
+                                        <th md-column md-order-by="release_date"><span>Release date</span></th>
+                                        <th md-column md-numeric md-order-by="vote_average"><span>Vote average</span></th>
+                                        <th md-column md-numeric md-order-by="vote_count"><span>Vote count</span></th>
+                                        <th md-column><span>Open details</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody md-body>
+                                    <tr md-row ng-repeat="movie in movies | filter: filter.search | orderBy: query.order | limitTo: query.limit : (query.page - 1) * query.limit">
+                                        <td md-cell>
+                                            <!-- TODO : ZOOM sur l'image -->
+                                            <img src="https://image.tmdb.org/t/p/w185{{movie.poster_path}}" style="width: 100px; height: auto;" />
+                                        </td>
+                                        <td md-cell><b>{{movie.original_title}}</b></td>
+                                        <td md-cell>{{movie.popularity}}</td>
+                                        <td md-cell>{{movie.release_date}}</td>
+                                        <td md-cell>{{movie.vote_average}}</td>
+                                        <td md-cell>{{movie.vote_count}}</td>
+                                        <td md-cell>
+                                            <md-button class="md-accent md-raised vz-overview-button" ng-click="openDetails($event, movie)">More</md-button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </md-table-container>
+
+                        <md-table-pagination md-limit="query.limit" md-limit-options="[5, 10, 50, 100]" md-page="query.page" md-total="{{moviesCount}}"
+                        md-boundary-links="true" md-on-paginate="onpagechange"></md-table-pagination>
+
+                    </md-card>
+                </div>
+
+            </div>
+        </section>
+
+    </md-content>
+
+    <!-- Menu de droite (Sidenav) qui permet de filtrer dans la liste des films -->
+
+<!-- http://docs.themoviedb.apiary.io/# -->
+
+    <md-sidenav class="md-sidenav-right" md-component-id="filter-menu">
+        <md-toolbar>
+            <h2 class="md-title vz-text-center">Search filters</h2>
+        </md-toolbar>
+        <md-content layout-padding>
+            <form ng-submit="searchWithFilters()">
+                <md-input-container class="vz-full-width">
+                    <label>Title</label>
+                    <input type="text" ng-model="search.movieTitle" md-autofocus />
+                </md-input-container>
+                <div class="vz-search-filter-block">
+                    <h6 class="vz-search-filter-input">Release Date</h6>
+                    <md-datepicker ng-model="search.movieReleaseDateBefore" md-placeholder="Before"></md-datepicker>
+                    <md-datepicker ng-model="search.movieReleaseDateAfter" md-placeholder="After"></md-datepicker>
+                </div>
+                <div class="vz-search-filter-block">
+                    <h6 class="vz-search-filter-input">Popularity</h6>
+                    <md-input-container class="vz-full-width vz-no-margin-bot">
+                        <label>Less than</label>
+                        <input type="number" min="0" max="100" step="0.01" ng-model="search.moviePopularityLessThan" />
+                    </md-input-container>
+                    <md-input-container class="vz-full-width vz-no-margin-bot">
+                        <label>More than</label>
+                        <input type="number" min="0" max="100" step="0.01" ng-model="search.moviePopularityMoreThan" />
+                    </md-input-container>
+                </div>
+                <div class="vz-search-filter-block">
+                    <h6 class="vz-search-filter-input">Vote average</h6>
+                    <md-input-container class="vz-full-width vz-no-margin-bot">
+                        <label>Less than</label>
+                        <input type="number" min="0" max="10" step="0.01" ng-model="search.movieVoteAverageLessThan" />
+                    </md-input-container>
+                    <md-input-container class="vz-full-width vz-no-margin-bot">
+                        <label>More than</label>
+                        <input type="number" min="0" max="10" step="0.01" ng-model="search.movieVoteAverageMoreThan" />
+                    </md-input-container>
+                </div>
+                <div class="vz-search-filter-block">
+                    <h6 class="vz-search-filter-input">Vote count</h6>
+                    <md-input-container class="vz-full-width vz-no-margin-bot">
+                        <label>Less than</label>
+                        <input type="number" min="0" step="1" ng-model="search.movieVoteCountLessThan" />
+                    </md-input-container>
+                    <md-input-container class="vz-full-width vz-no-margin-bot">
+                        <label>More than</label>
+                        <input type="number" min="0" step="1" ng-model="search.movieVoteCountMoreThan" />
+                    </md-input-container>
+                </div>
+                <md-button ng-click="searchWithFilters()" class="md-primary md-raised vz-search-button">
+                    Search
+                </md-button>
+                <md-button ng-click="resetSearchForm()" class="md-accent">
+                    Reset
+                </md-button>
+            </form>
+        </md-content>
+    </md-sidenav>
+
+</div>

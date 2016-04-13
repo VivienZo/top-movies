@@ -1,0 +1,136 @@
+body {
+  width:100%;
+  padding:0;
+  margin:0;
+  box-sizing: border-box;
+}
+.vz-center-block {
+  margin: auto !important;
+}
+.vz-background-grey {
+  background-color: antiquewhite;
+}
+.vz-search-filters {
+  padding-bottom: 16px;
+}
+.vz-button {
+    text-transform: none;
+    line-height: 32px;
+    min-height: 32px;
+}
+.vz-open-new {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+}
+.vz-xml-button {
+    background: rgb(224,224,224) !important;
+    color: rgb(66,66,66) !important;
+}
+.vz-card-title {
+    line-height: normal;
+}
+md-chip-template {
+    font-size: 12px;
+}
+.vz-sidenav {
+    max-width: 800px;
+    width: 800px;
+}
+.md-datepicker-input-container {
+    width: 82%;
+}
+.md-datepicker-input {
+    width: 100%;
+    max-width: none;
+}
+.vz-copy-clipboard {
+    position: relative;
+    bottom: 6px;
+}
+.vz-copy-clipboard-icon {
+    position: relative;
+    top: 3px;
+}
+.vz-sidenav-content {
+    height: calc(100% - 80px);
+}
+.vz-sidenav-footer {
+    bottom: 0;
+    position: absolute;
+    width: calc(100% - 32px);
+}
+md-data-table-pagination>div {
+    border-top: none;
+    border-bottom: 1px rgba(0,0,0,.12) solid;
+}
+.vz-movies-title {
+    margin: auto 0;
+}
+.vz-limit-filter {
+    position: relative;
+    top: 12px;
+}
+.vz-search-button {
+    width: 90%;
+}
+.vz-table-card-wrapper {
+    padding-bottom: 32px;
+}
+.material-icons.md-14 { font-size: 14px; }
+.material-icons.md-18 { font-size: 18px; }
+.vz-ctrl-wrapper {
+    height:100%
+}
+.vz-overview-button {
+    text-transform: capitalize;
+}
+thead {
+    border-bottom: 0;
+}
+.vz-text-center {
+    text-align: center;
+}
+md-sidenav {
+    width: 400px;
+}
+.md-errors-spacer {
+    min-width: 0 !important;
+}
+.vz-search-filter-input {
+    margin: 5px 0;
+}
+.vz-full-width {
+    width: 100%;
+}
+.vz-no-margin-bot {
+    margin-bottom: 0;
+}
+.vz-search-filter-block {
+    margin-bottom: 18px;
+}
+.vz-search-button {
+    width: 60%;
+}
+.vz-details-title {
+    margin-bottom: 0px;
+}
+.vz-details-table {
+    width: 100%;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+}
+.vz-details-table tr:nth-child(even) {
+    background-color: #fff;
+}
+.vz-details-table tr:nth-child(odd) {
+    background-color: #EEEEEE;
+}
+md-chips .md-chips {
+    box-shadow: none;
+}
+md-dialog vz-details-dialog {
+    background-color: #F5F5F5;
+}

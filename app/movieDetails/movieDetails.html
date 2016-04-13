@@ -1,0 +1,89 @@
+<md-dialog class="vz-details-dialog" aria-label="Movie details" ng-cloak>
+    <form>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Details of the movie</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <i class="material-icons md-24">close</i>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <div class="md-dialog-content">
+            
+                <div layout="row" flex>
+                    <div layout="column" layout-align="center center" flex>
+                        <h2 class="md-title vz-details-title">{{movie.original_title}}</h2>
+                        <h3 class="md-subhead">{{movie.tagline}}</h3>
+                    </div>
+                </div>
+                
+                <div layout="row" flex>
+                    <div layout="column" layout-padding>
+                        <img src="https://image.tmdb.org/t/p/w185{{movie.poster_path}}" />
+                    </div>
+                    <div layout="column" flex>
+                        <h2 class="md-title vz-details-title">Overview</h2>
+                        <p>{{movie.overview}}</p>
+                        
+                        <span ng-if="movie.genres">
+                            <h2 class="md-title vz-details-title">Genres</h2>
+                            <md-chips ng-model="movie.genres" readonly="true">
+                                <md-chip-template>
+                                    {{$chip.name}}
+                                </md-chip-template>
+                            </md-chips>
+                        </span>
+                        
+                        <h2 class="md-title vz-details-title">Additional information</h2>
+                        <table class="vz-details-table">
+                            <tr ng-if="movie.belongs_to_collection && movie.belongs_to_collection.name">
+                                <td>Belongs to collection</td>
+                                <td>{{movie.belongs_to_collection.name}}</td>
+                            </tr>
+                            <tr ng-if="movie.budget">
+                                <td>Budget of the movie</td>
+                                <td>{{movie.budget}} $</td>
+                            </tr>
+                            <tr ng-if="movie.revenue">
+                                <td>Revenue</td>
+                                <td>{{movie.revenue}} $</td>
+                            </tr>
+                            <tr ng-if="movie.runtime">
+                                <td>Runtime</td>
+                                <td>{{movie.runtime}} minutes</td>
+                            </tr>
+                            <tr ng-if="movie.original_language">
+                                <td>Original language</td>
+                                <td>{{movie.original_language}}</td>
+                            </tr>
+                            <tr ng-if="movie.homepage">
+                                <td>Homepage</td>
+                                <td><a href="{{movie.homepage}}" target="_blank">{{movie.homepage}}</a></td>
+                            </tr>
+                            <tr ng-if="movie.popularity">
+                                <td>Popularity</td>
+                                <td>{{movie.popularity}}</td>
+                            </tr>
+                            <tr ng-if="movie.vote_average">
+                                <td>Vote average</td>
+                                <td>{{movie.vote_average}}</td>
+                            </tr>
+                            <tr ng-if="movie.vote_count">
+                                <td>Vote count</td>
+                                <td>{{movie.vote_count}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button ng-click="hide()" style="margin-right:20px;">
+                Ok
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

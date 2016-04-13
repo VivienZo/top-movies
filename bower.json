@@ -1,0 +1,17 @@
+{
+  "name": "top-movies-app",
+  "version": "0.1.0",
+  "description": "Cette application référence une sélection des meilleurs films selon le site IMDb.",
+  "author": {
+    "name": "vivien-zoonekynd",
+    "email": "contact@vivienzo.fr"
+  },
+  "dependencies": {
+    "angular": "~1.5.3",
+	"angular-route": "~1.5.3",
+	"angular-i18n": "~1.5.3",
+	"angular-material": "~1.0.6",
+	"angular-material-data-table": "~0.10.2",
+	"angular-material-icons": "~0.7.0"
+  }
+}
