@@ -6,6 +6,7 @@ by using [Angular Material](https://material.angularjs.org/latest/) (Google)
 and [Material Design Data Table](https://github.com/daniel-nagy/md-data-table) (Daniel Nagy).
 
 ## Demo
+You can find a live demo here: [http://www.vivienzo.fr/demo/top-movies/](http://www.vivienzo.fr/demo/top-movies/)
 
 ## License
 This software is provided free of charge and without restriction under the [GNU License](https://github.com/VivienZo/top-movies/blob/master/LICENSE).
