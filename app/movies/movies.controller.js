@@ -21,6 +21,23 @@
             page: 1,
             rowsPerPage: [5, 10, 50, 100]
         };
+        //TODO : trier par continent
+        // https://fr.wikipedia.org/wiki/Liste_des_codes_ISO_639-1 
+        $scope.availableLanguages = [
+            {code: 'en', name: 'English'},
+            {code: 'fr', name: 'French'},
+            {code: 'de', name: 'German'},
+            {code: 'es', name: 'Spanish'},
+            {code: 'pt', name: 'Portuguese'},
+            {code: 'it', name: 'Italian'},
+            {code: 'nl', name: 'Dutch'},
+            {code: 'hu', name: 'Hungarian'},
+            {code: 'ro', name: 'Romanian'},
+            {code: 'ar', name: 'Arabic'},
+            {code: 'zh', name: 'Chinese'},
+            {code: 'ja', name: 'Japanese'},
+            {code: 'ko', name: 'Korean'}
+        ];
         
         
         /**
@@ -67,11 +84,9 @@
         // ---------- md-dialog ----------
         $scope.openDetails = function(ev, movie) {
             dataservice.getDetails(movie.id).then(function (response) {
-                console.log("aze", response.details);
-                console.log("qsd", movie);
                 $mdDialog.show({
                     locals: {
-                        movie: response.details
+                        movie: response.data
                     },
                     controller: MovieDetailsCtrl,
                     templateUrl: './app/movieDetails/movieDetails.html',
@@ -96,6 +111,8 @@
             console.info("search : ",$scope.search);
             dataservice.searchWithFilters($scope.search).then( function (response) {
                 console.info("response", response);
+                $scope.movies = response.data.results;
+                $scope.moviesCount = response.data.results.length;
             });
             $mdSidenav('filter-menu').close();
         };

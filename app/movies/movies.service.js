@@ -16,7 +16,7 @@
         // api_key=8781b7598f5ea90173b90d07812925d7
         // http://docs.themoviedb.apiary.io/#reference/search/searchmovie/get
         // 10 requêtes / 40 secondes
-        var apiUrl = "http://api.themoviedb.org/3/movie/";
+        var apiUrl = "http://api.themoviedb.org/3/";
         var apiKey = "?api_key=8781b7598f5ea90173b90d07812925d7";
         
         /**
@@ -35,81 +35,80 @@
         function getMovies() {
             console.log("getMovies()");
             
-            var deferred = $q.defer();
+            var deferred = $q.defer(),
+            promises = [],
+            promise1, promise2, promise3, promise4, promise5,
+            page1, page2, page3, page4, page5;
             
-            $http({method: 'GET', url: apiUrl + "popular" + apiKey + "&page=1"}).
-                success(function(data, status, headers, config) {
-                    console.log(data);
-                    
-                    $http({method: 'GET', url: apiUrl + "popular" + apiKey + "&page=2"}).
-                        success(function(data2, status, headers, config) {
-                            console.log(data2);
-                            
-                            $http({method: 'GET', url: apiUrl + "popular" + apiKey + "&page=3"}).
-                                success(function(data3, status, headers, config) {
-                                    console.log(data3);
-                                    
-                                    $http({method: 'GET', url: apiUrl + "popular" + apiKey + "&page=4"}).
-                                        success(function(data4, status, headers, config) {
-                                            console.log(data4);
-                                            
-                                            $http({method: 'GET', url: apiUrl + "popular" + apiKey + "&page=5"}).
-                                                success(function(data5, status, headers, config) {
-                                                    console.log(data5);
-                                                    
-                                                    deferred.resolve({
-                                                        success         : true,
-                                                        movies          : data.results
-                                                            .concat(data2.results)
-                                                            .concat(data3.results)
-                                                            .concat(data4.results)
-                                                            .concat(data5.results)
-                                                    });
-                                                    
-                                                }).
-                                                error(function(data5, status, headers, config) {
-                                                    console.error("ERROR",data5);
-                                                    deferred.resolve({
-                                                        success         : false,
-                                                        movies          : data5
-                                                    });
-                                                });
-                                            
-                                        }).
-                                        error(function(data4, status, headers, config) {
-                                            console.error("ERROR",data4);
-                                            deferred.resolve({
-                                                success         : false,
-                                                movies          : data4
-                                            });
-                                        });
-                                    
-                                }).
-                                error(function(data3, status, headers, config) {
-                                    console.error("ERROR",data3);
-                                    deferred.resolve({
-                                        success         : false,
-                                        movies          : data3
-                                    });
-                                });
-                            
-                        }).
-                        error(function(data2, status, headers, config) {
-                            console.error("ERROR",data2);
-                            deferred.resolve({
-                                success         : false,
-                                movies          : data2
-                            });
-                        });
-                    
-                }).
-                error(function(data, status, headers, config) {
-                    console.error("ERROR",data);
-                    deferred.resolve({
-                        success         : false,
-                        movies          : data
-                    });
+            promise1 = $http({method: 'GET', url: apiUrl + "movie/popular" + apiKey + "&page=1"}).then(
+                function successCallback (response) {
+                    // console.log("response: ",response);
+                    page1 = response.data.results;
+                },
+                function errorCallback (response) {
+                    console.error("ERROR",response);
+                    page1 = [];
                 });
+            promises.push(promise1);
+            
+            promise2 = $http({method: 'GET', url: apiUrl + "movie/popular" + apiKey + "&page=2"}).then(
+                function successCallback (response) {
+                    // console.log("response: ",response);
+                    page2 = response.data.results;
+                },
+                function errorCallback (response) {
+                    console.error("ERROR",response);
+                    page2 = [];
+                });
+            promises.push(promise2);
+            
+            promise3 = $http({method: 'GET', url: apiUrl + "movie/popular" + apiKey + "&page=3"}).then(
+                function successCallback (response) {
+                    // console.log("response: ",response);
+                    page3 = response.data.results;
+                },
+                function errorCallback (response) {
+                    console.error("ERROR",response);
+                    page3 = [];
+                });
+            promises.push(promise3);
+                
+            promise4 = $http({method: 'GET', url: apiUrl + "movie/popular" + apiKey + "&page=4"}).then(
+                function successCallback (response) {
+                    // console.log("response: ",response);
+                    page4 = response.data.results;
+                },
+                function errorCallback (response) {
+                    console.error("ERROR",response);
+                    page4 = [];
+                });
+            promises.push(promise4);
+            
+            promise5 = $http({method: 'GET', url: apiUrl + "movie/popular" + apiKey + "&page=5"}).then(
+                function successCallback (response) {
+                    // console.log("response: ",response);
+                    page5 = response.data.results;
+                },
+                function errorCallback (response) {
+                    console.error("ERROR",response);
+                    page5 = [];
+                });
+            promises.push(promise5);
+            
+            // console.log("promises",promises);
+                
+            $q.all(promises).then( function () {
+                var allMovies = page1
+                        .concat(page2)
+                        .concat(page3)
+                        .concat(page4)
+                        .concat(page5);
+                // console.log("All movies are loaded: ", allMovies);
+                deferred.resolve({
+                    success         : true,
+                    movies          : allMovies
+                });
+            });
             
             return deferred.promise;
         };
@@ -120,48 +119,33 @@
          */
         function getDetails(movieId) {
             console.log("getDetails(movieId)",movieId);
-            var deferred = $q.defer();
-            
-            $http({method: 'GET', url: apiUrl + movieId + apiKey})
-                .success(function(data, status, headers, config) {
-                    console.log(data);
-                    deferred.resolve({
-                        success: true,
-                        details: data
-                    });
-                })
-                .error(function(data, status, headers, config) {
-                    console.error("ERROR",data);
-                    deferred.resolve({
-                        success         : false,
-                        details          : data
-                    });
-                });
-            
-            return deferred.promise;
+            return $http({method: 'GET', url: apiUrl + 'movie/' + movieId + apiKey});
         }
         
         
         /**
          * Fonction permettant de récupérer la liste des films qui correspond à la recherche de l'utilisateur
+         * http://docs.themoviedb.apiary.io/#reference/search/searchmovie/get
+         * ?api_key=8781b7598f5ea90173b90d07812925d7
+         * 
+         * http://api.themoviedb.org/3/search/movie?api_key=8781b7598f5ea90173b90d07812925d7&page=1&query=Dead
+         * 
+         * echapper le titre avec urlencode()
          */
         function searchWithFilters(filters) {
             console.log("searchWithFilters(filters)",filters);
-            var deferred = $q.defer();
-            
-            $http({method: 'GET', url: apiUrl+"&page=1"})
-                .success(function(data, status, headers, config) {
-                    console.log(data);
-                })
-                .error(function(data, status, headers, config) {
-                    console.error("ERROR",data);
-                    deferred.resolve({
-                        success         : false,
-                        movies          : data
-                    });
-                });
-            
-            return deferred.promise;
+            // url encode sur les paramètres de search
+            Object.keys(filters).forEach(function (searchKey) {
+                filters[searchKey] = encodeURI(filters[searchKey]);
+            });
+            //on génère l'url
+            var calledUrl = apiUrl + 'search/movie' + apiKey
+                + ((filters.movieTitle) ? '&query=' + filters.movieTitle : '')
+                + ((filters.movieReleaseDate) ? '&year=' + filters.movieReleaseYear : '')
+                + ((filters.movieLanguage) ? '&language=' + filters.movieLanguage : '')
+                + '&page=1';
+            //on lance la requête
+            return $http({method: 'GET', url: calledUrl});
         };
         
     }

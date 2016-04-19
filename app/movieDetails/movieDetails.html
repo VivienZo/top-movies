@@ -50,6 +50,10 @@
                                 <td>Revenue</td>
                                 <td>{{movie.revenue}} $</td>
                             </tr>
+                            <tr ng-if="movie.release_date">
+                                <td>Release date</td>
+                                <td>{{movie.release_date}}</td>
+                            </tr>
                             <tr ng-if="movie.runtime">
                                 <td>Runtime</td>
                                 <td>{{movie.runtime}} minutes</td>

@@ -82,46 +82,21 @@
             <form ng-submit="searchWithFilters()">
                 <md-input-container class="vz-full-width">
                     <label>Title</label>
-                    <input type="text" ng-model="search.movieTitle" md-autofocus />
+                    <input type="text" ng-model="search.movieTitle" md-autofocus ng-required />
                 </md-input-container>
-                <div class="vz-search-filter-block">
-                    <h6 class="vz-search-filter-input">Release Date</h6>
-                    <md-datepicker ng-model="search.movieReleaseDateBefore" md-placeholder="Before"></md-datepicker>
-                    <md-datepicker ng-model="search.movieReleaseDateAfter" md-placeholder="After"></md-datepicker>
-                </div>
-                <div class="vz-search-filter-block">
-                    <h6 class="vz-search-filter-input">Popularity</h6>
-                    <md-input-container class="vz-full-width vz-no-margin-bot">
-                        <label>Less than</label>
-                        <input type="number" min="0" max="100" step="0.01" ng-model="search.moviePopularityLessThan" />
-                    </md-input-container>
-                    <md-input-container class="vz-full-width vz-no-margin-bot">
-                        <label>More than</label>
-                        <input type="number" min="0" max="100" step="0.01" ng-model="search.moviePopularityMoreThan" />
-                    </md-input-container>
-                </div>
-                <div class="vz-search-filter-block">
-                    <h6 class="vz-search-filter-input">Vote average</h6>
-                    <md-input-container class="vz-full-width vz-no-margin-bot">
-                        <label>Less than</label>
-                        <input type="number" min="0" max="10" step="0.01" ng-model="search.movieVoteAverageLessThan" />
-                    </md-input-container>
-                    <md-input-container class="vz-full-width vz-no-margin-bot">
-                        <label>More than</label>
-                        <input type="number" min="0" max="10" step="0.01" ng-model="search.movieVoteAverageMoreThan" />
-                    </md-input-container>
-                </div>
-                <div class="vz-search-filter-block">
-                    <h6 class="vz-search-filter-input">Vote count</h6>
-                    <md-input-container class="vz-full-width vz-no-margin-bot">
-                        <label>Less than</label>
-                        <input type="number" min="0" step="1" ng-model="search.movieVoteCountLessThan" />
-                    </md-input-container>
-                    <md-input-container class="vz-full-width vz-no-margin-bot">
-                        <label>More than</label>
-                        <input type="number" min="0" step="1" ng-model="search.movieVoteCountMoreThan" />
-                    </md-input-container>
-                </div>
+                <md-input-container class="vz-full-width">
+                    <label>Release Date</label>
+                    <input type="number" min="1900" max="2099" step="1" ng-model="search.movieReleaseYear" />
+                    <!-- ng-messages pour afficher un message d'erreur -->
+                </md-input-container>
+                <md-input-container class="vz-full-width">
+                    <label>Language</label>
+                    <md-select ng-model="search.movieLanguage">
+                    <md-option ng-repeat="lang in availableLanguages" value="{{lang.code}}">
+                        {{lang.name}}
+                    </md-option>
+                    </md-select>
+                </md-input-container>
                 <md-button ng-click="searchWithFilters()" class="md-primary md-raised vz-search-button">
                     Search
                 </md-button>
