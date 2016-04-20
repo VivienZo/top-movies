@@ -20,8 +20,8 @@
                 </div>
                 
                 <div layout="row" flex>
-                    <div layout="column" layout-padding>
-                        <img src="https://image.tmdb.org/t/p/w185{{movie.poster_path}}" />
+                    <div layout="column" ng-if="movie.poster_path" layout-padding>
+                        <img ng-src="https://image.tmdb.org/t/p/w185{{movie.poster_path}}" />
                     </div>
                     <div layout="column" flex>
                         <h2 class="md-title vz-details-title">Overview</h2>

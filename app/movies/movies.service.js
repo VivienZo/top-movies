@@ -3,11 +3,11 @@
 
     angular
         .module('app')
-        .factory('dataservice', dataservice);
+        .factory('moviesService', moviesService);
 
-    dataservice.$inject = ['$http', '$q'];
+    moviesService.$inject = ['$http', '$q'];
 
-    function dataservice($http, $q) {
+    function moviesService($http, $q) {
         
         /**
          * Définition de l'URL de l'API utilisée par le service
@@ -32,15 +32,15 @@
         /**
          * Fonction permettant de récupérer les Movies affichées sur la page d'accueil
          */
-        function getMovies() {
-            console.log("getMovies()");
+        function getMovies(category) {
+            console.log("getMovies(category)",category);
             
             var deferred = $q.defer(),
             promises = [],
             promise1, promise2, promise3, promise4, promise5,
             page1, page2, page3, page4, page5;
             
-            promise1 = $http({method: 'GET', url: apiUrl + "movie/popular" + apiKey + "&page=1"}).then(
+            promise1 = $http({method: 'GET', url: apiUrl + "movie/" + category + apiKey + "&page=1"}).then(
                 function successCallback (response) {
                     // console.log("response: ",response);
                     page1 = response.data.results;
@@ -117,9 +117,8 @@
         /**
          * Fonction permettant de récupérer les détails d'un film
          */
-        function getDetails(movieId) {
-            console.log("getDetails(movieId)",movieId);
-            return $http({method: 'GET', url: apiUrl + 'movie/' + movieId + apiKey});
+        function getDetails(movieId, lang) {
+            return $http({method: 'GET', url: apiUrl + 'movie/' + movieId + apiKey + (lang ? "&language="+lang : "")});
         }
         
         
@@ -135,14 +134,15 @@
         function searchWithFilters(filters) {
             console.log("searchWithFilters(filters)",filters);
             // url encode sur les paramètres de search
-            Object.keys(filters).forEach(function (searchKey) {
-                filters[searchKey] = encodeURI(filters[searchKey]);
+            var encodedFilters = angular.copy(filters);
+            Object.keys(encodedFilters).forEach(function (searchKey) {
+                encodedFilters[searchKey] = encodeURI(encodedFilters[searchKey]);
             });
             //on génère l'url
             var calledUrl = apiUrl + 'search/movie' + apiKey
-                + ((filters.movieTitle) ? '&query=' + filters.movieTitle : '')
-                + ((filters.movieReleaseDate) ? '&year=' + filters.movieReleaseYear : '')
-                + ((filters.movieLanguage) ? '&language=' + filters.movieLanguage : '')
+                + ((encodedFilters.movieTitle) ? '&query=' + encodedFilters.movieTitle : '')
+                + ((encodedFilters.movieReleaseYear) ? '&year=' + encodedFilters.movieReleaseYear : '')
+                + ((encodedFilters.movieLanguage) ? '&language=' + encodedFilters.movieLanguage : '')
                 + '&page=1';
             //on lance la requête
             return $http({method: 'GET', url: calledUrl});

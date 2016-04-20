@@ -134,3 +134,9 @@ md-chips .md-chips {
 md-dialog vz-details-dialog {
     background-color: #F5F5F5;
 }
+.md-warn:hover {
+    background-color: #00897B;
+}
+.vz-selected-teal {
+    background-color: #00695C !important;
+}

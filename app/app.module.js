@@ -19,7 +19,7 @@
             $mdThemingProvider.theme('default')
                 .primaryPalette('blue')
                 .accentPalette('red')
-                .warnPalette('amber')
+                .warnPalette('teal')
                 .backgroundPalette('grey');
         }
         

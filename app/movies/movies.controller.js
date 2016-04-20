@@ -5,9 +5,9 @@
         .module('app')
         .controller('MoviesCtrl', MoviesCtrl);
 
-    MoviesCtrl.$inject = ['$scope', 'dataservice', '$timeout','$q', '$mdDialog', '$mdSidenav'];
+    MoviesCtrl.$inject = ['$scope', 'moviesService', '$timeout','$q', '$mdDialog', '$mdSidenav'];
     
-    function MoviesCtrl($scope, dataservice, $timeout, $q, $mdDialog, $mdSidenav) {
+    function MoviesCtrl($scope, moviesService, $timeout, $q, $mdDialog, $mdSidenav) {
         
         /**
          * Définition des variables du controller
@@ -21,6 +21,7 @@
             page: 1,
             rowsPerPage: [5, 10, 50, 100]
         };
+        $scope.selectedCategory = 'popular';
         //TODO : trier par continent
         // https://fr.wikipedia.org/wiki/Liste_des_codes_ISO_639-1 
         $scope.availableLanguages = [
@@ -64,18 +65,26 @@
             return deferred.promise;
         };
         
+        
         /**
          * Fonction appelée au chargement de la page qui permet de récupérer les 100 movies à afficher par défaut
          */
-        function getMovies() {
-            console.log("getMovies()");
+        function getMovies(category) {
+            console.log("getMovies(category)",category);
+            //on sélectionne la catégorie
+            if (category === 'popular' || category === 'top_rated' || category === 'upcoming') {
+                $scope.selectedCategory = category;
+                //TODO : changer le tri du datatable ne fonction de la categorie
+            } else {
+                $scope.selectedCategory = 'popular';
+            }
             //on retourne la promesse
-            return dataservice.getMovies()
-                .then(function (data) {
-                    console.log('dataservice.getMovies data',data);
-                    if (data && data.movies) {
-                        $scope.movies = data.movies;
-                        $scope.moviesCount = data.movies.length;
+            return moviesService.getMovies(category)
+                .then(function (response) {
+                    console.log('moviesService.getMovies response',response);
+                    if (response && response.movies) {
+                        $scope.movies = response.movies;
+                        $scope.moviesCount = response.movies.length;
                     }
                     return $scope.movies;
                 });
@@ -83,7 +92,11 @@
         
         // ---------- md-dialog ----------
         $scope.openDetails = function(ev, movie) {
-            dataservice.getDetails(movie.id).then(function (response) {
+            var language;
+            if ($scope.search && $scope.search.movieLanguage) {
+                language = $scope.search.movieLanguage;
+            }
+            moviesService.getDetails(movie.id, language).then(function (response) {
                 $mdDialog.show({
                     locals: {
                         movie: response.data
@@ -109,7 +122,7 @@
         
         $scope.searchWithFilters = function () {
             console.info("search : ",$scope.search);
-            dataservice.searchWithFilters($scope.search).then( function (response) {
+            moviesService.searchWithFilters($scope.search).then( function (response) {
                 console.info("response", response);
                 $scope.movies = response.data.results;
                 $scope.moviesCount = response.data.results.length;
@@ -124,7 +137,7 @@
         
         // --------------------- INITIALISATION ----------------------
         
-        $scope.deferred = $scope.getMovies();
+        $scope.deferred = $scope.getMovies('popular');
         
         // ------------------- FIN INITIALISATION --------------------
         
