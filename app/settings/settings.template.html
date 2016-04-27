@@ -1,0 +1,42 @@
+<md-bottom-sheet class="md-grid vz-bottom-sheet" layout="column" ng-cloak>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>{{'SETTINGS' | translate}}</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="cancel()">
+                <i class="material-icons md-24">close</i>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-content layout="row" style="padding-bottom: 0;" flex layout-padding>
+        <div layout="column" style="padding-bottom: 0;" flex>
+
+            <md-tabs md-dynamic-height md-border-bottom>
+                <md-tab label="{{'LANGUAGE' | translate}}">
+                    <md-content class="md-padding" style="padding-bottom: 0;">
+                        <md-list flex layout="row" layout-align="center center">
+                            <md-list-item ng-repeat="language in availableLanguages">
+                                <div>
+                                    <md-button class="md-grid-item-content" ng-click="changeLanguage(language.code)">
+                                        <span class="flag-icon flag-icon-{{language.countryCode}} vz-settings-flag"></span>
+                                        <div class="md-grid-text"> {{ language.name }} </div>
+                                    </md-button>
+                                </div>
+                            </md-list-item>
+                        </md-list>
+                    </md-content>
+                </md-tab>
+                <md-tab label="{{'ABOUT' | translate}}">
+                    <md-content class="md-padding">
+                        <p>
+                            {{'DEVELOPPED_BY' | translate}} <a target="_blank" href="http://www.vivienzo.fr">{{'NAME' | translate}}</a>.<br />
+                            {{'VIEW_SOURCES' | translate}} <a target="_blank" href="https://www.github.com/VivienZo/top-movies">GitHub</a>.
+                        </p>
+                    </md-content>
+                </md-tab>
+            </md-tabs>
+
+        </div>
+    </md-content>
+
+</md-bottom-sheet>

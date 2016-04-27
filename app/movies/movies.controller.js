@@ -5,152 +5,179 @@
         .module('app')
         .controller('MoviesCtrl', MoviesCtrl);
 
-    MoviesCtrl.$inject = ['$scope', 'moviesService', '$timeout','$q', '$mdDialog', '$mdSidenav'];
+    MoviesCtrl.$inject = ['$scope', 'moviesService', '$timeout','$q', '$mdDialog', '$mdSidenav', '$mdBottomSheet', '$mdToast', '$translate'];
     
-    function MoviesCtrl($scope, moviesService, $timeout, $q, $mdDialog, $mdSidenav) {
+    function MoviesCtrl($scope, moviesService, $timeout, $q, $mdDialog, $mdSidenav, $mdBottomSheet, $mdToast, $translate) {
         
         /**
-         * Définition des variables du controller
+         * VARIABLES
          */
-        $scope.getMovies = getMovies;
+        
         $scope.movies = [];
         $scope.moviesCount = 0;
         $scope.query = {
-            order: '-popularity',
+            order: '',
             limit: 10,
             page: 1,
             rowsPerPage: [5, 10, 50, 100]
         };
         $scope.selectedCategory = 'popular';
-        //TODO : trier par continent
-        // https://fr.wikipedia.org/wiki/Liste_des_codes_ISO_639-1 
+        // https://fr.wikipedia.org/wiki/Liste_des_codes_ISO_639-1
         $scope.availableLanguages = [
-            {code: 'en', name: 'English'},
-            {code: 'fr', name: 'French'},
-            {code: 'de', name: 'German'},
-            {code: 'es', name: 'Spanish'},
-            {code: 'pt', name: 'Portuguese'},
-            {code: 'it', name: 'Italian'},
-            {code: 'nl', name: 'Dutch'},
-            {code: 'hu', name: 'Hungarian'},
-            {code: 'ro', name: 'Romanian'},
-            {code: 'ar', name: 'Arabic'},
-            {code: 'zh', name: 'Chinese'},
-            {code: 'ja', name: 'Japanese'},
-            {code: 'ko', name: 'Korean'}
+            {code: 'en', countryCode: 'gb', name: 'English'},
+            {code: 'fr', countryCode: 'fr', name: 'French'}
         ];
         
         
         /**
-         * Fonction appelée par la directive md-data-table lorsque l'utilisateur change de page dans le tableau
+         * GET MOVIES BY CATEGORY
          */
-        $scope.onpagechange = function(page, limit) {
-            // console.log("onpagechange(page,limit)",page,limit);
-            var deferred = $q.defer();
-            $timeout(function () {
-                deferred.resolve();
-            }, 100);
-            return deferred.promise;
-        };
-
-        /**
-         * Fonction appelée par la directive md-data-table lorsque l'utilisateur change l'ordre d'une colonne du tableau
-         */
-        $scope.onorderchange = function(order) {
-            // console.log("onorderchange(order)",order);
-            var deferred = $q.defer();
-            $timeout(function () {
-                deferred.resolve();
-            }, 100);
-            return deferred.promise;
-        };
         
-        
-        /**
-         * Fonction appelée au chargement de la page qui permet de récupérer les 100 movies à afficher par défaut
-         */
-        function getMovies(category) {
+        // Fonction qui permet de récupérer les films à afficher dans la liste selon la catégorie sélectionnée
+        $scope.getMovies = function (category) {
             console.log("getMovies(category)",category);
             //on sélectionne la catégorie
             if (category === 'popular' || category === 'top_rated' || category === 'upcoming') {
                 $scope.selectedCategory = category;
-                //TODO : changer le tri du datatable ne fonction de la categorie
             } else {
                 $scope.selectedCategory = 'popular';
             }
             //on retourne la promesse
-            return moviesService.getMovies(category)
+            $scope.promise = moviesService.getMovies($scope.selectedCategory)
                 .then(function (response) {
-                    console.log('moviesService.getMovies response',response);
-                    if (response && response.movies) {
-                        $scope.movies = response.movies;
-                        $scope.moviesCount = response.movies.length;
+                    if (!response || response.status === -1 || !response.data || !response.data.results) {
+                        $scope.showNotification('RESPONSE_ERROR');
+                    } else {
+                        $scope.movies = response.data.results;
+                        $scope.moviesCount = response.data.results.length;
                     }
-                    return $scope.movies;
-                });
+                }
+            );
+            return $scope.promise;
         };
         
-        // ---------- md-dialog ----------
+        
+        /**
+         * SEARCH FILTERS
+         */
+        
+        //fonction qui ouvre le mdSidenav qui affiche le formulaire de recherche
+        $scope.openSearch = function () {
+            $mdSidenav('search-menu').open();
+        };
+        
+        //fonction qui lance une recherche de film avec des filtres (nom, année de sortie)
+        $scope.searchWithFilters = function () {
+            console.info("search : ",$scope.search);
+            moviesService.searchWithFilters($scope.search)
+                .then(
+                function successCallback (response) {
+                    //on met à jour la liste à afficher
+                    $scope.movies = response.data.results;
+                    $scope.moviesCount = response.data.results.length;
+                },
+                function errorCallback (response) {
+                    $scope.showNotification('RESPONSE_ERROR');
+                }
+            );
+            $mdSidenav('search-menu').close();
+        };
+        
+        //fonction qui réinitialise le formulaire de recherche
+        $scope.resetSearchForm = function () {
+            $scope.search = {};
+        };
+        
+        
+        /**
+         * MOVIE DETAILS
+         */
+        
+        // Fonction qui lance une requête pour demander les détails d'un film puis qui lance le mdDialog
         $scope.openDetails = function(ev, movie) {
             var language;
             if ($scope.search && $scope.search.movieLanguage) {
                 language = $scope.search.movieLanguage;
             }
-            moviesService.getDetails(movie.id, language).then(function (response) {
+            $scope.promise = moviesService.getDetails(movie.id, language).then(function (response) {
                 $mdDialog.show({
                     locals: {
                         movie: response.data
                     },
-                    controller: MovieDetailsCtrl,
+                    controller: 'MovieDetailsCtrl',
                     templateUrl: './app/movieDetails/movieDetails.html',
                     parent: angular.element(document.body),
                     targetEvent: ev,
                     clickOutsideToClose:true
                 });
             });
-        };
-        
-        // ---------- md-sidenav ----------
-        $scope.openSidenav = function () {
-            $mdSidenav('filter-menu').open();
+            return $scope.promise;
         };
         
         
         /**
-         * SEARCH FILTER 
+         * SETTINGS
          */
         
-        $scope.searchWithFilters = function () {
-            console.info("search : ",$scope.search);
-            moviesService.searchWithFilters($scope.search).then( function (response) {
-                console.info("response", response);
-                $scope.movies = response.data.results;
-                $scope.moviesCount = response.data.results.length;
+        $scope.openSettings = function($event) {
+            $mdBottomSheet.show({
+                locals: {
+                    availableLanguages: $scope.availableLanguages
+                },
+                controller: 'SettingsCtrl',
+                templateUrl: './app/settings/settings.template.html',
+                parent: angular.element(document.body),
+                targetEvent: $event,
+                clickOutsideToClose: true
             });
-            $mdSidenav('filter-menu').close();
-        };
-        
-        $scope.resetSearchForm = function () {
-            $scope.search = {};
         };
         
         
-        // --------------------- INITIALISATION ----------------------
+        /**
+         * NOTIFICATION
+         */
         
+        $scope.showNotification = function (messageCode) {
+            $mdToast.show(
+                $mdToast.simple()
+                    .textContent($translate.instant(messageCode))
+                    .hideDelay(3000)
+            );
+        };
+        
+        
+        /**
+         * LISTENERS
+         */
+        
+        // Fonction appelée par la directive md-data-table lorsque l'utilisateur change de page dans le tableau
+        $scope.onpagechange = function(page, limit) {
+            // console.log("onpagechange(page,limit)",page,limit);
+            // var deferred = $q.defer();
+            // $timeout(function () {
+            //     deferred.resolve();
+            // }, 100);
+            // return deferred.promise;
+        };
+        
+        // Fonction appelée par la directive md-data-table lorsque l'utilisateur change l'ordre d'une colonne du tableau
+        $scope.onorderchange = function(order) {
+            // console.log("onorderchange(order)",order);
+            // var deferred = $q.defer();
+            // $timeout(function () {
+            //     deferred.resolve();
+            // }, 100);
+            // return deferred.promise;
+        };
+        
+        
+        /**
+         * INITIALISATION
+         */
+        
+        // Lance la fonction d'affichage des films les plus populaires
         $scope.deferred = $scope.getMovies('popular');
         
-        // ------------------- FIN INITIALISATION --------------------
-        
     };
-    
-    function MovieDetailsCtrl($scope, $mdDialog, movie) {
-        $scope.hide = function() {
-            $mdDialog.hide();
-        };
-        $scope.cancel = function() {
-            $mdDialog.cancel();
-        };
-        $scope.movie = movie;
-    }
     
 })();

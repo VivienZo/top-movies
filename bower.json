@@ -12,6 +12,7 @@
 	"angular-i18n": "~1.5.3",
 	"angular-material": "~1.0.6",
 	"angular-material-data-table": "~0.10.2",
-	"angular-material-icons": "~0.7.0"
+	"angular-material-icons": "~0.7.0",
+  "flag-icon-css": "~2.0.0"
   }
 }

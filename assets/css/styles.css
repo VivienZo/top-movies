@@ -140,3 +140,18 @@ md-dialog vz-details-dialog {
 .vz-selected-teal {
     background-color: #00695C !important;
 }
+.vz-first-button {
+    margin-left: 0 !important;
+}
+.vz-last-button {
+    margin-right: 0 !important;
+}
+.vz-bottom-sheet {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    border: none;
+}
+.vz-settings-flag {
+    width: 3em !important;
+    line-height: 4em !important;
+}

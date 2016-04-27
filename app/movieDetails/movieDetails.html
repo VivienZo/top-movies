@@ -2,7 +2,7 @@
     <form>
         <md-toolbar>
             <div class="md-toolbar-tools">
-                <h2>Details of the movie</h2>
+                <h2>{{'MOVIE_DETAILS' | translate}}</h2>
                 <span flex></span>
                 <md-button class="md-icon-button" ng-click="cancel()">
                     <i class="material-icons md-24">close</i>
@@ -24,11 +24,11 @@
                         <img ng-src="https://image.tmdb.org/t/p/w185{{movie.poster_path}}" />
                     </div>
                     <div layout="column" flex>
-                        <h2 class="md-title vz-details-title">Overview</h2>
+                        <h2 class="md-title vz-details-title">{{'OVERVIEW' | translate}}</h2>
                         <p>{{movie.overview}}</p>
                         
                         <span ng-if="movie.genres">
-                            <h2 class="md-title vz-details-title">Genres</h2>
+                            <h2 class="md-title vz-details-title">{{'GENRES' | translate}}</h2>
                             <md-chips ng-model="movie.genres" readonly="true">
                                 <md-chip-template>
                                     {{$chip.name}}
@@ -36,46 +36,46 @@
                             </md-chips>
                         </span>
                         
-                        <h2 class="md-title vz-details-title">Additional information</h2>
+                        <h2 class="md-title vz-details-title">{{'{{'ADDITIONAL_INFORMATION' | translate}}' | translate}}</h2>
                         <table class="vz-details-table">
                             <tr ng-if="movie.belongs_to_collection && movie.belongs_to_collection.name">
-                                <td>Belongs to collection</td>
+                                <td>{{'BELONGS_TO_COLLECTION' | translate}}</td>
                                 <td>{{movie.belongs_to_collection.name}}</td>
                             </tr>
                             <tr ng-if="movie.budget">
-                                <td>Budget of the movie</td>
+                                <td>{{'BUDGET' | translate}}</td>
                                 <td>{{movie.budget}} $</td>
                             </tr>
                             <tr ng-if="movie.revenue">
-                                <td>Revenue</td>
+                                <td>{{'REVENUE' | translate}}</td>
                                 <td>{{movie.revenue}} $</td>
                             </tr>
                             <tr ng-if="movie.release_date">
-                                <td>Release date</td>
+                                <td>{{'RELEASE_DATE' | translate}}</td>
                                 <td>{{movie.release_date}}</td>
                             </tr>
                             <tr ng-if="movie.runtime">
-                                <td>Runtime</td>
+                                <td>{{'RUNTIME' | translate}}</td>
                                 <td>{{movie.runtime}} minutes</td>
                             </tr>
                             <tr ng-if="movie.original_language">
-                                <td>Original language</td>
+                                <td>{{'ORIGINAL_LANGUAGE' | translate}}</td>
                                 <td>{{movie.original_language}}</td>
                             </tr>
                             <tr ng-if="movie.homepage">
-                                <td>Homepage</td>
+                                <td>{{'HOMEPAGE' | translate}}</td>
                                 <td><a href="{{movie.homepage}}" target="_blank">{{movie.homepage}}</a></td>
                             </tr>
                             <tr ng-if="movie.popularity">
-                                <td>Popularity</td>
+                                <td>{{'POPULARITY' | translate}}</td>
                                 <td>{{movie.popularity}}</td>
                             </tr>
                             <tr ng-if="movie.vote_average">
-                                <td>Vote average</td>
+                                <td>{{'VOTE_AVERAGE' | translate}}</td>
                                 <td>{{movie.vote_average}}</td>
                             </tr>
                             <tr ng-if="movie.vote_count">
-                                <td>Vote count</td>
+                                <td>{{'VOTE_COUNT' | translate}}</td>
                                 <td>{{movie.vote_count}}</td>
                             </tr>
                         </table>
@@ -86,7 +86,7 @@
         <md-dialog-actions layout="row">
             <span flex></span>
             <md-button ng-click="hide()" style="margin-right:20px;">
-                Ok
+                {{'OK' | translate}}
             </md-button>
         </md-dialog-actions>
     </form>
