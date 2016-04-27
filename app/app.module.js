@@ -35,6 +35,7 @@
                 SEARCH: 'Search',
                 POSTER: 'Poster',
                 ORIGINAL_TITLE: 'Original title',
+                TITLE: 'Title',
                 POPULARITY: 'Popularity',
                 RELEASE_DATE: 'Release date',
                 VOTE_AVERAGE: 'Vote average',
@@ -64,7 +65,8 @@
                 OF: 'of',
                 PAGE: 'page',
                 ROWS_PER_PAGE: 'Rows per page',
-                RESPONSE_ERROR: 'Oops! The server is unavailable...'
+                RESPONSE_ERROR: 'Oops! The server is unavailable...',
+                RESPONSE_PARTIAL: 'Incomplete response...'
             });
             $translateProvider.translations('fr', {
                 POPULAR: 'Populaires',
@@ -74,6 +76,7 @@
                 SEARCH: 'Rechercher',
                 POSTER: 'Affiche',
                 ORIGINAL_TITLE: 'Titre original',
+                TITLE: 'Titre',
                 POPULARITY: 'Popularité',
                 RELEASE_DATE: 'Date de sortie',
                 VOTE_AVERAGE: 'Moyenne des votes',
@@ -103,7 +106,8 @@
                 OF: 'sur',
                 PAGE: 'page',
                 ROWS_PER_PAGE: 'Lignes par page',
-                RESPONSE_ERROR: 'Oops! Le serveur est indisponible...'
+                RESPONSE_ERROR: 'Oops! Le serveur est indisponible...',
+                RESPONSE_PARTIAL: 'La réponse est incomplète...'
             });
             $translateProvider.preferredLanguage('fr');
         }

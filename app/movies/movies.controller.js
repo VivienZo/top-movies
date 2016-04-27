@@ -45,8 +45,12 @@
             //on retourne la promesse
             $scope.promise = moviesService.getMovies($scope.selectedCategory)
                 .then(function (response) {
-                    if (!response || response.status === -1 || !response.data || !response.data.results) {
-                        $scope.showNotification('RESPONSE_ERROR');
+                    if (!response || (response.status === -1 && response.statusText) || !response.data || !response.data.results) {
+                        $scope.showNotification(response.statusText);
+                    } else if (response.status === 0 && response.statusText) {
+                        $scope.showNotification(response.statusText);
+                        $scope.movies = response.data.results;
+                        $scope.moviesCount = response.data.results.length;
                     } else {
                         $scope.movies = response.data.results;
                         $scope.moviesCount = response.data.results.length;
@@ -95,11 +99,7 @@
         
         // Fonction qui lance une requête pour demander les détails d'un film puis qui lance le mdDialog
         $scope.openDetails = function(ev, movie) {
-            var language;
-            if ($scope.search && $scope.search.movieLanguage) {
-                language = $scope.search.movieLanguage;
-            }
-            $scope.promise = moviesService.getDetails(movie.id, language).then(function (response) {
+            $scope.promise = moviesService.getDetails(movie.id).then(function (response) {
                 $mdDialog.show({
                     locals: {
                         movie: response.data

@@ -5,9 +5,9 @@
         .module('app')
         .factory('moviesService', moviesService);
 
-    moviesService.$inject = ['$http', '$q'];
+    moviesService.$inject = ['$http', '$q', '$translate'];
 
-    function moviesService($http, $q) {
+    function moviesService($http, $q, $translate) {
 
         /**
          * Définition de l'URL de l'API utilisée par le service
@@ -16,6 +16,7 @@
 
         var apiUrl = "http://api.themoviedb.org/3/";
         var apiKey = "?api_key=8781b7598f5ea90173b90d07812925d7";
+        var selectedLanguage = $translate.use();
 
         /**
          * Fonctions exposées par le service
@@ -39,7 +40,7 @@
                 promise1, promise2, promise3, promise4, promise5,
                 page1, page2, page3, page4, page5;
 
-            promise1 = $http({ method: 'GET', url: apiUrl + "movie/" + category + apiKey + "&page=1" }).then(
+            promise1 = $http({ method: 'GET', url: apiUrl + "movie/" + category + apiKey + "&page=1" + "&language=" + selectedLanguage }).then(
                 function successCallback(response) {
                     page1 = response;
                 },
@@ -49,7 +50,7 @@
                 });
             promises.push(promise1);
 
-            promise2 = $http({ method: 'GET', url: apiUrl + "movie/" + category + apiKey + "&page=2" }).then(
+            promise2 = $http({ method: 'GET', url: apiUrl + "movie/" + category + apiKey + "&page=2" + "&language=" + selectedLanguage }).then(
                 function successCallback(response) {
                     page2 = response;
                 },
@@ -59,7 +60,7 @@
                 });
             promises.push(promise2);
 
-            promise3 = $http({ method: 'GET', url: apiUrl + "movie/" + category + apiKey + "&page=3" }).then(
+            promise3 = $http({ method: 'GET', url: apiUrl + "movie/" + category + apiKey + "&page=3" + "&language=" + selectedLanguage }).then(
                 function successCallback(response) {
                     page3 = response;
                 },
@@ -69,7 +70,7 @@
                 });
             promises.push(promise3);
 
-            promise4 = $http({ method: 'GET', url: apiUrl + "movie/" + category + apiKey + "&page=4" }).then(
+            promise4 = $http({ method: 'GET', url: apiUrl + "movie/" + category + apiKey + "&page=4" + "&language=" + selectedLanguage }).then(
                 function successCallback(response) {
                     page4 = response;
                 },
@@ -79,7 +80,7 @@
                 });
             promises.push(promise4);
 
-            promise5 = $http({ method: 'GET', url: apiUrl + "movie/" + category + apiKey + "&page=5" }).then(
+            promise5 = $http({ method: 'GET', url: apiUrl + "movie/" + category + apiKey + "&page=5" + "&language=" + selectedLanguage }).then(
                 function successCallback(response) {
                     page5 = response;
                 },
@@ -97,19 +98,19 @@
                 // - liste complète : pas d'erreur (status: 1)
                 // - liste incomplète : au moins une requête en erreur (status: 0)
                 // - liste vide : toutes les requêtes en erreur (status: -1)
-                if (page1.status === -1 &&
-                    page2.status === -1 &&
-                    page3.status === -1 &&
-                    page4.status === -1 &&
-                    page5.status === -1) {
+                if (page1.status !== 200 &&
+                    page2.status !== 200 &&
+                    page3.status !== 200 &&
+                    page4.status !== 200 &&
+                    page5.status !== 200) {
                     //toutes les requêtes sont en erreur
                     status = -1;
                     statusText = "RESPONSE_ERROR";
-                } else if (page1.status === -1 ||
-                    page2.status === -1 ||
-                    page3.status === -1 ||
-                    page4.status === -1 ||
-                    page5.status === -1) {
+                } else if (page1.status !== 200 ||
+                    page2.status !== 200 ||
+                    page3.status !== 200 ||
+                    page4.status !== 200 ||
+                    page5.status !== 200) {
                     //au moins une requête est en erreur
                     status = 0;
                     statusText = "RESPONSE_PARTIAL";
@@ -160,8 +161,7 @@
             var calledUrl = apiUrl + 'search/movie' + apiKey
                 + ((encodedFilters.movieTitle) ? '&query=' + encodedFilters.movieTitle : '')
                 + ((encodedFilters.movieReleaseYear) ? '&year=' + encodedFilters.movieReleaseYear : '')
-                + ((encodedFilters.selectedLanguage) ? '&language=' + encodedFilters.selectedLanguage : '')
-                + '&page=1';
+                + '&page=1' + '&language=' + selectedLanguage;
             //on lance la requête
             return $http({
                 method: 'GET',
@@ -173,10 +173,10 @@
         /**
          * Fonction permettant de récupérer les détails d'un film
          */
-        function getDetails(movieId, lang) {
+        function getDetails(movieId) {
             return $http({
                 method: 'GET',
-                url: apiUrl + 'movie/' + movieId + apiKey + (lang ? "&language=" + lang : "")
+                url: apiUrl + 'movie/' + movieId + apiKey + "&language=" + selectedLanguage
             });
         }
 

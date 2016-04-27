@@ -54,7 +54,7 @@
                                 <thead md-head md-order="query.order" md-on-reorder="onorderchange">
                                     <tr md-row>
                                         <th md-column><span>{{'POSTER' | translate}}</span></th>
-                                        <th md-column md-order-by="original_title"><span>{{'ORIGINAL_TITLE' | translate}}</span></th>
+                                        <th md-column md-order-by="title"><span>{{'TITLE' | translate}}</span></th>
                                         <th md-column md-numeric md-order-by="popularity" md-desc><span>{{'POPULARITY' | translate}}</span></th>
                                         <th md-column md-order-by="release_date"><span>{{'RELEASE_DATE' | translate}}</span></th>
                                         <th md-column md-numeric md-order-by="vote_average"><span>{{'VOTE_AVERAGE' | translate}}</span></th>
@@ -67,7 +67,7 @@
                                         <td md-cell>
                                             <img ng-if="movie.poster_path" ng-src="https://image.tmdb.org/t/p/w185{{movie.poster_path}}" style="width: 100px; height: auto;" />
                                         </td>
-                                        <td md-cell><b>{{movie.original_title}}</b></td>
+                                        <td md-cell><b>{{movie.title}}</b></td>
                                         <td md-cell>{{movie.popularity}}</td>
                                         <td md-cell>{{movie.release_date}}</td>
                                         <td md-cell>{{movie.vote_average}}</td>
