@@ -1,5 +1,5 @@
 # Top Movies
-This Angular app allows you to manipulate the top 100 list of the most popular movies of the moment.
+This app allows you to manipulate a list of the movies. You can play with the most popular movies of the moment, the top rated movies and the upcoming movies.
 The data comes from the RESTful API of [TMDb](https://www.themoviedb.org/).
 The app follows the rules of the [Material Design](https://www.google.com/design/spec/components/data-tables.html) 
 by using [Angular Material](https://material.angularjs.org/latest/) (Google) 

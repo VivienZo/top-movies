@@ -17,12 +17,17 @@
         var apiUrl = "http://api.themoviedb.org/3/";
         var apiKey = "?api_key=8781b7598f5ea90173b90d07812925d7";
         var selectedLanguage = $translate.use();
+        var nextPage = 1;
+        var totalPages = 1;
+        var totalResults = 0;
+        var baseUrl = "";
 
         /**
          * Fonctions exposées par le service
          */
         var service = {
             getMovies: getMovies,
+            getNextMovies: getNextMovies,
             searchWithFilters: searchWithFilters,
             getDetails: getDetails
         };
@@ -35,113 +40,75 @@
         function getMovies(category) {
             console.log("getMovies(category)", category);
 
-            var deferred = $q.defer(),
-                promises = [],
-                promise1, promise2, promise3, promise4, promise5,
-                page1, page2, page3, page4, page5;
+            var deferred = $q.defer();
+            
+            baseUrl = apiUrl + "movie/" + category + apiKey;
 
-            promise1 = $http({ method: 'GET', url: apiUrl + "movie/" + category + apiKey + "&page=1" + "&language=" + selectedLanguage }).then(
-                function successCallback(response) {
-                    page1 = response;
-                },
-                function errorCallback(response) {
+            $http({ method: 'GET', url: baseUrl + "&language=" + selectedLanguage })
+                .then( function (response) {
+                    //on met à jour les informations dont on dispose
+                    totalResults = response.data.total_results;
+                    totalPages = response.data.total_pages;
+                    nextPage = response.data.page + 1;
+                    //on renvoie la réponse
+                    deferred.resolve(response);
+                })
+                .catch( function (response) {
                     console.error("ERROR", response);
-                    page1 = response;
+                    var returnedResponse = {
+                        data: response.results,
+                        page: response.page,
+                        total_results: response.total_results,
+                        total_pages: response.total_pages,
+                        statusText: "RESPONSE_ERROR"
+                    };
+                    deferred.reject(returnedResponse);
                 });
-            promises.push(promise1);
-
-            promise2 = $http({ method: 'GET', url: apiUrl + "movie/" + category + apiKey + "&page=2" + "&language=" + selectedLanguage }).then(
-                function successCallback(response) {
-                    page2 = response;
-                },
-                function errorCallback(response) {
-                    console.error("ERROR", response);
-                    page2 = response;
-                });
-            promises.push(promise2);
-
-            promise3 = $http({ method: 'GET', url: apiUrl + "movie/" + category + apiKey + "&page=3" + "&language=" + selectedLanguage }).then(
-                function successCallback(response) {
-                    page3 = response;
-                },
-                function errorCallback(response) {
-                    console.error("ERROR", response);
-                    page3 = response;
-                });
-            promises.push(promise3);
-
-            promise4 = $http({ method: 'GET', url: apiUrl + "movie/" + category + apiKey + "&page=4" + "&language=" + selectedLanguage }).then(
-                function successCallback(response) {
-                    page4 = response;
-                },
-                function errorCallback(response) {
-                    console.error("ERROR", response);
-                    page4 = response;
-                });
-            promises.push(promise4);
-
-            promise5 = $http({ method: 'GET', url: apiUrl + "movie/" + category + apiKey + "&page=5" + "&language=" + selectedLanguage }).then(
-                function successCallback(response) {
-                    page5 = response;
-                },
-                function errorCallback(response) {
-                    console.error("ERROR", response);
-                    page5 = response;
-                });
-            promises.push(promise5);
-
-            $q.all(promises).then(function () {
-                var status = -1,
-                    statusText = "";
-                
-                //on calcule le status de la réponse globale :
-                // - liste complète : pas d'erreur (status: 1)
-                // - liste incomplète : au moins une requête en erreur (status: 0)
-                // - liste vide : toutes les requêtes en erreur (status: -1)
-                if (page1.status !== 200 &&
-                    page2.status !== 200 &&
-                    page3.status !== 200 &&
-                    page4.status !== 200 &&
-                    page5.status !== 200) {
-                    //toutes les requêtes sont en erreur
-                    status = -1;
-                    statusText = "RESPONSE_ERROR";
-                } else if (page1.status !== 200 ||
-                    page2.status !== 200 ||
-                    page3.status !== 200 ||
-                    page4.status !== 200 ||
-                    page5.status !== 200) {
-                    //au moins une requête est en erreur
-                    status = 0;
-                    statusText = "RESPONSE_PARTIAL";
-                } else {
-                    status = 1;
-                    statusText = "RESPONSE_OK";
-                }
-                
-                var results = (page1.data && page1.data.results)? page1.data.results : [];
-                results = results.concat( (page2.data && page2.data.results)? page2.data.results : [] );
-                results = results.concat( (page3.data && page3.data.results)? page3.data.results : [] );
-                results = results.concat( (page4.data && page4.data.results)? page4.data.results : [] );
-                results = results.concat( (page5.data && page5.data.results)? page5.data.results : [] );
-                
-                console.log("response: ", {
-                    data: { results: results },
-                    status: status,
-                    statusText: statusText
-                });
-                
-                //on renvoie une réponse ayant la même forme que celle de $http
-                deferred.resolve({
-                    data: { results: results },
-                    status: status,
-                    statusText: statusText
-                });
-            });
 
             return deferred.promise;
         }
-
+        
+        
+        /**
+         * Fonction permettant de charger les résultats suivants en appelant l'URL passée en paramètres
+         */
+        function getNextMovies() {
+            console.log("getNextMovies()");
+            var deferred = $q.defer();
+            
+            if (nextPage <= totalPages) {
+                                
+                $http({ method: 'GET', url: baseUrl + "&language=" + selectedLanguage + "&page=" + nextPage })
+                    .then( function (response) {
+                        //on met à jour les informations dont on dispose
+                        totalResults = response.data.total_results;
+                        totalPages = response.data.total_pages;
+                        nextPage = response.data.page + 1;
+                        //on renvoie la réponse
+                        deferred.resolve(response);
+                    })
+                    .catch( function (response) {
+                        console.error("ERROR", response);
+                        var returnedResponse = {
+                            data: response.results,
+                            page: response.page,
+                            total_results: response.total_results,
+                            total_pages: response.total_pages,
+                            statusText: "RESPONSE_ERROR"
+                        };
+                        deferred.reject(returnedResponse);
+                    });
+                    
+            } else {
+                //la dernière page a déjà été chargée
+                console.info("No more pages to load.");
+                deferred.reject({
+                    statusText: "NO_MORE_RESULTS"
+                });
+            }
+            
+            return deferred.promise;
+        }
 
         /**
          * Fonction permettant de récupérer la liste des films qui correspond à la recherche de l'utilisateur.
@@ -152,21 +119,42 @@
          */
         function searchWithFilters(filters) {
             console.log("searchWithFilters (filters)", filters);
+            var deferred = $q.defer();
+            
             // on encode les caractères spéciaux pour qu'ils puissent être passés dans l'url
             var encodedFilters = angular.copy(filters);
             Object.keys(encodedFilters).forEach(function (searchKey) {
                 encodedFilters[searchKey] = encodeURI(encodedFilters[searchKey]);
             });
+            
             //on génère l'url
-            var calledUrl = apiUrl + 'search/movie' + apiKey
-                + ((encodedFilters.movieTitle) ? '&query=' + encodedFilters.movieTitle : '')
-                + ((encodedFilters.movieReleaseYear) ? '&year=' + encodedFilters.movieReleaseYear : '')
-                + '&page=1' + '&language=' + selectedLanguage;
+            baseUrl = apiUrl + 'search/movie' + apiKey
+                            + ((encodedFilters.movieTitle) ? '&query=' + encodedFilters.movieTitle : '')
+                            + ((encodedFilters.movieReleaseYear) ? '&year=' + encodedFilters.movieReleaseYear : '');
+            
             //on lance la requête
-            return $http({
-                method: 'GET',
-                url: calledUrl
-            });
+            $http({ method: 'GET', url: baseUrl + "&language=" + selectedLanguage })
+                .then(function (response) {
+                    //on met à jour les informations dont on dispose
+                    totalResults = response.data.total_results;
+                    totalPages = response.data.total_pages;
+                    nextPage = response.data.page + 1;
+                    //on renvoie la réponse
+                    deferred.resolve(response);
+                })
+                .catch( function (response) {
+                    console.error("ERROR", response);
+                    var returnedResponse = {
+                        data: response.results,
+                        page: response.page,
+                        total_results: response.total_results,
+                        total_pages: response.total_pages,
+                        statusText: "RESPONSE_ERROR"
+                    };
+                    deferred.reject(returnedResponse);
+                })
+            
+            return deferred.promise;
         }
 
 

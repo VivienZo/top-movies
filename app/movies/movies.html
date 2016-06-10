@@ -48,10 +48,17 @@
 
                 <div layout="row" layout-fill class="vz-table-card-wrapper">
                     <md-card layout="column" layout-padding flex layout-fill>
-
+                        
+                        <md-table-pagination
+                            style="border:none;"
+                            md-limit="query.limit" md-limit-options="query.rowsPerPage" md-page="query.page" md-total="{{totalMovies}}"
+                            md-boundary-links="false" md-on-paginate="onPaginate" ng-disabled="disableNext"
+                            md-label="{of: '{{'OF' | translate}}', page: '{{'PAGE' | translate}}', rowsPerPage: '{{'ROWS_PER_PAGE' | translate}}'}"
+                            ></md-table-pagination>
+                            
                         <md-table-container>
                             <table md-table md-progress="promise">
-                                <thead md-head md-order="query.order" md-on-reorder="onorderchange">
+                                <thead md-head md-order="query.order" md-on-reorder="onReorder">
                                     <tr md-row>
                                         <th md-column><span>{{'POSTER' | translate}}</span></th>
                                         <th md-column md-order-by="title"><span>{{'TITLE' | translate}}</span></th>
@@ -80,8 +87,10 @@
                             </table>
                         </md-table-container>
 
-                        <md-table-pagination md-limit="query.limit" md-limit-options="[5, 10, 50, 100]" md-page="query.page" md-total="{{moviesCount}}"
-                            md-boundary-links="true" md-on-paginate="onpagechange"
+                        <md-table-pagination
+                            style="border:none;"
+                            md-limit="query.limit" md-limit-options="query.rowsPerPage" md-page="query.page" md-total="{{totalMovies}}"
+                            md-boundary-links="false" md-on-paginate="onPaginate" ng-disabled="disableNext"
                             md-label="{of: '{{'OF' | translate}}', page: '{{'PAGE' | translate}}', rowsPerPage: '{{'ROWS_PER_PAGE' | translate}}'}"
                             ></md-table-pagination>
 

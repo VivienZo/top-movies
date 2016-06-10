@@ -42,13 +42,13 @@
                                 <td>{{'BELONGS_TO_COLLECTION' | translate}}</td>
                                 <td>{{movie.belongs_to_collection.name}}</td>
                             </tr>
-                            <tr ng-if="movie.budget">
+                            <tr ng-if="movie.budgetString">
                                 <td>{{'BUDGET' | translate}}</td>
-                                <td>{{movie.budget}} $</td>
+                                <td>{{movie.budgetString}} $</td>
                             </tr>
-                            <tr ng-if="movie.revenue">
+                            <tr ng-if="movie.revenueString">
                                 <td>{{'REVENUE' | translate}}</td>
-                                <td>{{movie.revenue}} $</td>
+                                <td>{{movie.revenueString}} $</td>
                             </tr>
                             <tr ng-if="movie.release_date">
                                 <td>{{'RELEASE_DATE' | translate}}</td>
@@ -74,9 +74,9 @@
                                 <td>{{'VOTE_AVERAGE' | translate}}</td>
                                 <td>{{movie.vote_average}}</td>
                             </tr>
-                            <tr ng-if="movie.vote_count">
+                            <tr ng-if="movie.voteCountString">
                                 <td>{{'VOTE_COUNT' | translate}}</td>
-                                <td>{{movie.vote_count}}</td>
+                                <td>{{movie.voteCountString}}</td>
                             </tr>
                         </table>
                     </div>
