@@ -66,11 +66,12 @@
                                         <th md-column md-order-by="release_date"><span>{{'RELEASE_DATE' | translate}}</span></th>
                                         <th md-column md-numeric md-order-by="vote_average"><span>{{'VOTE_AVERAGE' | translate}}</span></th>
                                         <th md-column md-numeric md-order-by="vote_count"><span>{{'VOTE_COUNT' | translate}}</span></th>
-                                        <th md-column><span>{{'OPEN_DETAILS' | translate}}</span></th>
                                     </tr>
                                 </thead>
                                 <tbody md-body>
-                                    <tr md-row ng-repeat="movie in movies | filter: filter.search | orderBy: query.order | limitTo: query.limit : (query.page - 1) * query.limit">
+                                    <tr md-row
+                                        ng-repeat="movie in movies | filter: filter.search | orderBy: query.order | limitTo: query.limit : (query.page - 1) * query.limit"
+                                        ng-click="openDetails($event, movie)">
                                         <td md-cell>
                                             <img ng-if="movie.poster_path" ng-src="https://image.tmdb.org/t/p/w185{{movie.poster_path}}" style="width: 100px; height: auto;" />
                                         </td>
@@ -79,9 +80,6 @@
                                         <td md-cell>{{movie.release_date}}</td>
                                         <td md-cell>{{movie.vote_average}}</td>
                                         <td md-cell>{{movie.vote_count}}</td>
-                                        <td md-cell>
-                                            <md-button class="md-accent md-raised vz-overview-button" ng-click="openDetails($event, movie)">{{'MORE' | translate}}</md-button>
-                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
