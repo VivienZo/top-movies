@@ -155,3 +155,10 @@ md-dialog vz-details-dialog {
     width: 3em !important;
     line-height: 4em !important;
 }
+.vz-border-click:focus, .vz-border-click:active {
+  outline: none;
+  border: 0;
+}
+.vz-cursor-hand {
+  cursor: pointer;
+}
