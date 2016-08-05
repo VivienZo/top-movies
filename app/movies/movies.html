@@ -69,7 +69,7 @@
                                     </tr>
                                 </thead>
                                 <tbody md-body>
-                                    <tr md-row
+                                    <tr md-row class="vz-cursor-hand vz-border-click"
                                         ng-repeat="movie in movies | filter: filter.search | orderBy: query.order | limitTo: query.limit : (query.page - 1) * query.limit"
                                         ng-click="openDetails($event, movie)">
                                         <td md-cell>
